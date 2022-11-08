@@ -1,11 +1,11 @@
 from flask import Flask, request, render_template
-# from PIL import Image, ImageFilter
-# from pprint import PrettyPrinter
+from PIL import Image, ImageFilter
+from pprint import PrettyPrinter
 # from dotenv import load_dotenv
-# import json
-# import os
+import json
+import os
 import random
-# import requests
+# # import requests
 
 # load_dotenv()
 
@@ -58,7 +58,7 @@ def compliments_results():
     wants_compliment = request.args.get('wants_compliments')
     num_compliments = request.args.get('num_compliments')
     num_compliments = int(num_compliments)
-    if (wants_compliment == 'yes'):
+    if wants_compliment == 'yes':
         list_compliments = random.sample(list_of_compliments, k=num_compliments)
 
     context = {
@@ -85,15 +85,15 @@ animal_to_fact = {
 def animal_facts():
     """Show a form to choose an animal and receive facts."""
     animal = request.args.get('animal')
-    if (animal == 'koala'):
+    if animal == 'koala':
         animal_fact = "Koala fingerprints are so close to humans\' that they could taint crime scenes."
-    elif (animal == 'parrot'):
+    elif animal == 'parrot':
         animal_fact = "Parrots will selflessly help each other out."
-    elif (animal == 'mantis shrimp'):
+    elif animal == 'mantis shrimp':
         animal_fact = "The mantis shrimp has the world\'s fastest punch."
-    elif (animal == 'lion'):
+    elif animal == 'lion':
         animal_fact = "Female lions do 90 percent of the hunting."
-    elif (animal == 'narwhal'):
+    elif animal == 'narwhal':
         animal_fact = "Narwhal tusks are really an 'inside out' tooth."
     else:
         animal_fact = "I don't have any facts about that animal. Please try again!"
@@ -109,94 +109,91 @@ def animal_facts():
 # # IMAGE FILTER ROUTE
 # ################################################################################
 
-# filter_types_dict = {
-#     'blur': ImageFilter.BLUR,
-#     'contour': ImageFilter.CONTOUR,
-#     'detail': ImageFilter.DETAIL,
-#     'edge enhance': ImageFilter.EDGE_ENHANCE,
-#     'emboss': ImageFilter.EMBOSS,
-#     'sharpen': ImageFilter.SHARPEN,
-#     'smooth': ImageFilter.SMOOTH
-# }
+filter_types_dict = {
+    'blur': ImageFilter.BLUR,
+    'contour': ImageFilter.CONTOUR,
+    'detail': ImageFilter.DETAIL,
+    'edge enhance': ImageFilter.EDGE_ENHANCE,
+    'emboss': ImageFilter.EMBOSS,
+    'sharpen': ImageFilter.SHARPEN,
+    'smooth': ImageFilter.SMOOTH
+}
 
-# def save_image(image, filter_type):
-#     """Save the image, then return the full file path of the saved image."""
-#     # Append the filter type at the beginning (in case the user wants to 
-#     # apply multiple filters to 1 image, there won't be a name conflict)
-#     new_file_name = f"{filter_type}-{image.filename}"
-#     image.filename = new_file_name
+def save_image(image, filter_type):
+    """Save the image, then return the full file path of the saved image."""
+    # Append the filter type at the beginning (in case the user wants to 
+    # apply multiple filters to 1 image, there won't be a name conflict)
+    new_file_name = f"{filter_type}-{image.filename}"
+    image.filename = new_file_name
+    # Construct full file path
+    file_path = os.path.join(app.root_path, 'static/images', new_file_name)
+    # Save the image
+    image.save(file_path)
 
-#     # Construct full file path
-#     file_path = os.path.join(app.root_path, 'static/images', new_file_name)
-    
-#     # Save the image
-#     image.save(file_path)
-
-#     return file_path
+    return file_path
 
 
-# def apply_filter(file_path, filter_name):
-#     """Apply a Pillow filter to a saved image."""
-#     i = Image.open(file_path)
-#     i.thumbnail((500, 500))
-#     i = i.filter(filter_types_dict.get(filter_name))
-#     i.save(file_path)
+def apply_filter(file_path, filter_name):
+    """Apply a Pillow filter to a saved image."""
+    i = Image.open(file_path)
+    i.thumbnail((500, 500))
+    i = i.filter(filter_types_dict.get(filter_name))
+    i.save(file_path)
 
-# @app.route('/image_filter', methods=['GET', 'POST'])
-# def image_filter():
-#     """Filter an image uploaded by the user, using the Pillow library."""
-#     filter_types = filter_types_dict.keys()
+@app.route('/image_filter', methods=['GET', 'POST'])
+def image_filter():
+    """Filter an image uploaded by the user, using the Pillow library."""
+    filter_types = list(filter_types_dict.keys())
 
-#     if request.method == 'POST':
+    if request.method == 'POST':
+        # Get the user's chosen filter type (whichever one they chose in the form) and save
+        filter_type = request.args.get('filter_type')
         
-#         # TODO: Get the user's chosen filter type (whichever one they chose in the form) and save
-#         # as a variable
-#         # HINT: remember that we're working with a POST route here so which requests function would you use?
-#         filter_type = ''
-        
-#         # Get the image file submitted by the user
-#         image = request.files.get('users_image')
+        # Get the image file submitted by the user
+        image = request.files.get('users_image')
 
-#         # TODO: call `save_image()` on the image & the user's chosen filter type, save the returned
-#         # value as the new file path
+        # call `save_image()` on the image & the user's chosen filter type, save the returned value as variable
+        new_file_path = save_image(image, filter_type)
 
-#         # TODO: Call `apply_filter()` on the file path & filter type
+        # Call `apply_filter()` on the file path & filter type
+        apply_filter(new_file_path, filter_type)
 
-#         image_url = f'./static/images/{image.filename}'
+        image_url = f'./static/images/{image.filename}'
 
-#         context = {
-#             # TODO: Add context variables here for:
-#             # - The full list of filter types
-#             # - The image URL
-#         }
+        context = {
+            "filters": filter_types,
+            "image_url": image_url
+            # - The full list of filter types
+            # - The image URL
+        }
 
-#         return render_template('image_filter.html', **context)
+        return render_template('image_filter.html', **context)
 
-#     else: # if it's a GET request
-#         context = {
-#             # TODO: Add context variable here for the full list of filter types
-#         }
-#         return render_template('image_filter.html', **context)
+    else: 
+        context = {
+            "filters": filter_types,
+        }
+        return render_template('image_filter.html', **context)
 
 
-# ################################################################################
-# # GIF SEARCH ROUTE
-# ################################################################################
+################################################################################
+# GIF SEARCH ROUTE
+################################################################################
 
-# """You'll be using the Tenor API for this next section. 
-# Be sure to take a look at their API. 
+"""You'll be using the Tenor API for this next section. 
+Be sure to take a look at their API. 
 
-# https://tenor.com/gifapi/documentation
+https://tenor.com/gifapi/documentation
 
-# Register and make an API key for yourself. 
-# Set up dotenv, create a .env file and define a variable 
-# API_KEY with a value that is the api key for your account. """
+Register and make an API key for yourself. 
+Set up dotenv, create a .env file and define a variable 
+API_KEY with a value that is the api key for your account. """
 
-# API_KEY = os.getenv('API_KEY')
-# print(API_KEY)
+API_KEY = os.getenv('API_KEY')
+print(API_KEY)
 
-# TENOR_URL = 'https://api.tenor.com/v1/search'
-# pp = PrettyPrinter(indent=4)
+TENOR_URL = 'https://api.tenor.com/v1/search'
+pp = PrettyPrinter(indent=4)
 
 # @app.route('/gif_search', methods=['GET', 'POST'])
 # def gif_search():
