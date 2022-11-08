@@ -84,24 +84,23 @@ animal_to_fact = {
 @app.route('/animal_facts')
 def animal_facts():
     """Show a form to choose an animal and receive facts."""
-    # animal = request.args.get('animal')
-    # if (animal == 'koala'):
-    #     animal_fact = animal_to_fact['koala']
-    # elif (animal == 'parrot'):
-    #     animal_facts = animal_to_fact['parrot']
-    # elif (animal == 'mantis-shrimp'):
-    #     animal_facts = animal_to_fact['mantis shrimp']
-    # elif (animal == 'lion'):
-    #     animal_facts = animal_to_fact['lion']
-    # elif (animal == 'narwhal'):
-    #     animal_facts = animal_to_fact['narwhall']
+    animal = request.args.get('animal')
+    if (animal == 'koala'):
+        animal_fact = "Koala fingerprints are so close to humans\' that they could taint crime scenes."
+    elif (animal == 'parrot'):
+        animal_fact = "Parrots will selflessly help each other out."
+    elif (animal == 'mantis shrimp'):
+        animal_fact = "The mantis shrimp has the world\'s fastest punch."
+    elif (animal == 'lion'):
+        animal_fact = "Female lions do 90 percent of the hunting."
+    elif (animal == 'narwhal'):
+        animal_fact = "Narwhal tusks are really an 'inside out' tooth."
+    else:
+        animal_fact = "I don't have any facts about that animal. Please try again!"
 
     context = {
-        # TODO: Enter your context variables here for:
-        # - the list of all animals (get from animal_to_fact)
-        # - the chosen animal fact (may be None if the user hasn't filled out the form yet)
-        # "animal_fact": animal_facts
-        'animals': list(animal_to_fact.keys())
+        'animals': list(animal_to_fact.keys()),
+        "fact": animal_fact
     }
     return render_template('animal_facts.html', **context)
 

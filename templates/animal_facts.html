@@ -12,10 +12,10 @@ Animal Facts
 
         <label>
             Which animal do you want facts on?
-
             <!-- TODO: Use a for loop to show one option element for each 
                 animal. -->
             <select name="animal">
+                <option value ="none">None</option>
                 {% for animal in animals %}
                 <option value ="{{animal}}">{{animal}}</option>
                 {% endfor %}
@@ -33,9 +33,8 @@ Animal Facts
     <p>
         Here is your animal fact:
     </p>
-    <p>
-        <em> {{animal_fact}}</em>
-    </p>
+
+    <p><em> {{fact}}</em></p>
 </section>
 
 {% endblock %}
