@@ -9,7 +9,7 @@ import requests
 
 load_dotenv()
 
-
+print('hello')
 app = Flask(__name__)
 
 @app.route('/')
