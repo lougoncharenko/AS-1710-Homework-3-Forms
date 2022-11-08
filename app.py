@@ -198,6 +198,8 @@ pp = PrettyPrinter(indent=4)
 def gif_search():
     """Show a form to search for GIFs and show resulting GIFs from Tenor API."""
     if request.method == 'POST':
+        search = request.form.get('search_query')
+       quantity = request.form.get('quantity')
         # TODO: Get the search query & number of GIFs requested by the user, store each as a 
         # variable
 
