@@ -38,9 +38,12 @@ Gif Search
         separate p tag to show on separate lines). You can get the GIF's image URL by using: 
         gif['media'][0]['gif']['url'] -->
 
-    <p>
-        <img src="https://your/gif/url/goes/here" alt="GIF">
-    </p>
+  
+    {% for gif in gifs %}
+    <img src="{{gif}}" alt="GIF">   
+    {% endfor %}
+       
+ 
 </section>
 
 {% endblock %}

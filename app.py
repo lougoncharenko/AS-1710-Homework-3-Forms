@@ -5,7 +5,7 @@ from pprint import PrettyPrinter
 import json
 import os
 import random
-# # import requests
+import requests
 
 # load_dotenv()
 
@@ -179,52 +179,23 @@ def image_filter():
 # GIF SEARCH ROUTE
 ################################################################################
 
-"""You'll be using the Tenor API for this next section. 
-Be sure to take a look at their API. 
-
-https://tenor.com/gifapi/documentation
-
-Register and make an API key for yourself. 
-Set up dotenv, create a .env file and define a variable 
-API_KEY with a value that is the api key for your account. """
-
-API_KEY = os.getenv('API_KEY')
-print(API_KEY)
-
-TENOR_URL = 'https://api.tenor.com/v1/search'
-pp = PrettyPrinter(indent=4)
-
 @app.route('/gif_search', methods=['GET', 'POST'])
 def gif_search():
     """Show a form to search for GIFs and show resulting GIFs from Tenor API."""
     if request.method == 'POST':
         search = request.form.get('search_query')
-       quantity = request.form.get('quantity')
-        # TODO: Get the search query & number of GIFs requested by the user, store each as a 
-        # variable
-
+        quantity = request.form.get('quantity')
+        limit = int(quantity)
+        apikey = "AIzaSyBWZkd9EYKL356BTQFOtgmJJvFmUHaMlvc"
         response = requests.get(
-            TENOR_URL,
-            {
-                # TODO: Add in key-value pairs for:
-                # - 'q': the search query
-                # - 'key': the API key (defined above)
-                # - 'limit': the number of GIFs requested
-            })
+        "https://g.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (search, apikey, limit))
 
+        # gifs = json.loads(response.content)
         gifs = json.loads(response.content).get('results')
 
         context = {
             'gifs': gifs
         }
-
-         # Uncomment me to see the result JSON!
-        # Look closely at the response! It's a list
-        # list of data. The media property contains a 
-        # list of media objects. Get the gif and use it's 
-        # url in your template to display the gif. 
-        # pp.pprint(gifs)
-
         return render_template('gif_search.html', **context)
     else:
         return render_template('gif_search.html')
