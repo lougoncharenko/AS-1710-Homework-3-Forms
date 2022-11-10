@@ -40,7 +40,7 @@ Gif Search
 
   
     {% for gif in gifs %}
-    <img src="{{gif}}" alt="GIF">   
+    <img src="{{gif.media_formats.gif.url}}" alt="GIF">   
     {% endfor %}
        
  

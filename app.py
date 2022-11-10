@@ -188,11 +188,8 @@ def gif_search():
         limit = int(quantity)
         apikey = "AIzaSyBWZkd9EYKL356BTQFOtgmJJvFmUHaMlvc"
         response = requests.get(
-        "https://g.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (search, apikey, limit))
-
-        # gifs = json.loads(response.content)
+        f"https://tenor.googleapis.com/v2/search?q={search}&key={apikey}&limit={limit}")
         gifs = json.loads(response.content).get('results')
-
         context = {
             'gifs': gifs
         }
